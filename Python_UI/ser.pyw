@@ -4,6 +4,8 @@ import tkinter as tk
 
 ZERO = int.to_bytes(0, 1, "big")
 
+FRAMES = {}
+
 class Application(tk.Frame):
 
     def __init__(self, portCom, master=None):
