@@ -21,13 +21,14 @@ int g_dir = 1;
 int b_dir = -1;
 
 void fade_init(CRGB leds[NUM_LEDS]){
+  delay(5000);
   for(int i = 0; i != NUM_LEDS; i++){
     leds[i] = CRGB(255, 0, 127);
   }
 }
 
 void fade_step(CRGB leds[NUM_LEDS], int global_speed){
-
+  
   if( millis() - timer < global_speed ){
     return;
   }
