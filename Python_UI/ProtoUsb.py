@@ -1,8 +1,15 @@
 import serial
 import time
 
+#tram mode
 CUSTOM = 1
 BUNCH = 2
+MODE = 3
+TOGGLE = 4
+
+
+#RGB mods
+RAINBOW = 1
 
 
 def create_header(mode, crc, length):
@@ -25,16 +32,18 @@ def create_header(mode, crc, length):
         return [(mode << 5) + (crc << 4) + length]
 
 
-def send_custom(num_led, red, green, blue, ser):
-    header = create_header(CUSTOM, False, 4)
-    data = [num_led, red, green, blue]
-    ser.write(header+data)
-
 def checksum(data):
     sum = 0
     for d in data:
         sum ^= d
     return sum
+
+
+def send_custom(num_led, red, green, blue, ser):
+    header = create_header(CUSTOM, False, 4)
+    data = [num_led, red, green, blue]
+    ser.write(header+data)
+
 
 def send_bunch(start, leds, ser):
     header = create_header(BUNCH, False, len(leds)*3+1)
@@ -42,6 +51,15 @@ def send_bunch(start, leds, ser):
     for (r,g,b) in leds:
         data += [r, g, b]
     ser.write(header+data)
+
+def send_rainbow(speed, ser):
+    header = create_header(MODE, False, 2)
+    data = [RAINBOW, speed]
+    ser.write(header + data)
+
+def send_toggle(ser):
+    header = create_header(TOGGLE, False, 0)
+    ser.write(header)
 
 
 
