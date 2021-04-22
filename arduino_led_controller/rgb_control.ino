@@ -28,9 +28,11 @@ void fade_init(CRGB leds[NUM_LEDS]){
 
 void fade_step(CRGB leds[NUM_LEDS], int global_speed){
 
-  if(millis()%( 255 - global_speed ) != 0){
+  if( millis() - timer < global_speed ){
     return;
   }
+
+  timer = millis();
   
   CRGB color = leds[0];
   color.r = color.r + r_dir;
@@ -52,6 +54,8 @@ void fade_step(CRGB leds[NUM_LEDS], int global_speed){
   for(int i = 0; i != NUM_LEDS; i++){
     leds[i] = color;
   }
+
+  FastLED.show();
 }
 
 void rgb_handler(CRGB leds[NUM_LEDS]){

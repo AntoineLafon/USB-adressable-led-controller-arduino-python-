@@ -14,6 +14,7 @@ int lcrc;
 
 char actual_mod;
 int global_speed = 0;
+unsigned long timer = 0;
 
 void setup() {
   Serial.begin(115200);
@@ -21,6 +22,7 @@ void setup() {
   digitalWrite(LED_BUILTIN, LOW);
   pinMode(PIN, OUTPUT);
   FastLED.addLeds<WS2811, PIN, GRB>(leds, NUM_LEDS).setCorrection( 0x3C6DFF );
+
 }
 
 
@@ -36,6 +38,9 @@ void loop() {
  }
 
  rgb_handler(leds);
+
+
+ 
 
  
 }

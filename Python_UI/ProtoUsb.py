@@ -86,7 +86,13 @@ for j in range(0,3):
                 send_custom(99, 255, 0, 0, seri)
                 time.sleep(0.001)
             send_bunch(i, [(0,0,0)] +([(255,(255*k*k*k//(l*l*l)),(255*k*k*k//(l*l*l))) for k in range(0,l)]), seri)"""
-send_fade(1, seri)
+
+send_fade(100, seri)
+for i in range(10):
+    print("[","="*i," "*(9-i),"]", sep="")
+    time.sleep(1)
+print("envoie de bunch")
+send_bunch(0, [(200,0,0)]*50, seri)
 print(seri.read())
 
 

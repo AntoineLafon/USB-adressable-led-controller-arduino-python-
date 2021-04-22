@@ -37,9 +37,11 @@ void execute(CRGB leds[NUM_LEDS], char mode, unsigned char * data, int len){
   switch(mode){
     case CUSTOM:
       set_color_led(leds,data);
+      actual_mod = 0;
       break;
     case BUNCH:
       setBunch(leds,data,len);
+      actual_mod = 0;
       break;
     case MODE:
       mod_execute(leds, data, len);
