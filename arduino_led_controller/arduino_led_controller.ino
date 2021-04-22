@@ -10,6 +10,10 @@ char mode;
 unsigned int len;
 bool crc;
 unsigned char data[3*NUM_LEDS];
+int lcrc;
+
+char actual_mod;
+int global_speed = 0;
 
 void setup() {
   Serial.begin(115200);
@@ -25,11 +29,13 @@ void loop() {
  if(Serial.available()){
    header = Serial.read();
    parse_header(header, &mode, &crc, &len);
-   Serial.readBytes(data,len);
-   execute(leds, mode, data, len);
-  //if ((lcrc == len) && (!crc || checksum(data, len, Serial.read()))){
-    //execute(leds, mode, data, len);
-  //}
-  
+   lcrc = Serial.readBytes(data,len + (int)crc);
+   if ((lcrc == len + (int)crc) && (!crc || checksum(data, len, data[len]))){
+     execute(leds, mode, data, len);
+   }
  }
+
+ rgb_handler(leds);
+
+ 
 }

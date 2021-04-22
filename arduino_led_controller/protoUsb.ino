@@ -1,5 +1,11 @@
 #define CUSTOM 1
 #define BUNCH 2
+#define MODE 3
+
+
+//RGB mods
+#define RAINBOW 1
+#define FADE 2
 
 void parse_header(unsigned char header, char *mode, bool *crc, unsigned int* len){
   *mode = header>>5;
@@ -35,6 +41,24 @@ void execute(CRGB leds[NUM_LEDS], char mode, unsigned char * data, int len){
     case BUNCH:
       setBunch(leds,data,len);
       break;
+    case MODE:
+      mod_execute(leds, data, len);
+      break;
+    default:
+       break;
+          
+  }
+}
+
+void mod_execute(CRGB leds[NUM_LEDS], char* data, int len){
+  switch(data[0]){
+    case FADE:
+      if (actual_mod != FADE){
+        actual_mod = FADE;
+        global_speed = data[1];
+        fade_init(leds);
+      }
+
     default:
       break;
   }

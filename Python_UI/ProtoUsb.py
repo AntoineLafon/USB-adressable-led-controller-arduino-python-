@@ -10,6 +10,7 @@ TOGGLE = 4
 
 #RGB mods
 RAINBOW = 1
+FADE = 2
 
 
 def create_header(mode, crc, length):
@@ -57,6 +58,11 @@ def send_rainbow(speed, ser):
     data = [RAINBOW, speed]
     ser.write(header + data)
 
+def send_fade(speed, ser):
+    header = create_header(MODE, False, 2)
+    data = [FADE, speed]
+    ser.write(header + data)
+
 def send_toggle(ser):
     header = create_header(TOGGLE, False, 0)
     ser.write(header)
@@ -69,7 +75,7 @@ seri = serial.Serial("COM3", 115200, timeout=1)
 print("connected!")
 time.sleep(2)
 #send_custom(0,255,255,255,seri)
-l = 90
+"""l = 90
 for j in range(0,3):
     for i in range(0,99):
         time.sleep(0.001)
@@ -79,8 +85,8 @@ for j in range(0,3):
             if i == 0:
                 send_custom(99, 255, 0, 0, seri)
                 time.sleep(0.001)
-            send_bunch(i, [(0,0,0)] +([(255,(255*k*k*k//(l*l*l)),(255*k*k*k//(l*l*l))) for k in range(0,l)]), seri)
-
+            send_bunch(i, [(0,0,0)] +([(255,(255*k*k*k//(l*l*l)),(255*k*k*k//(l*l*l))) for k in range(0,l)]), seri)"""
+send_fade(1, seri)
 print(seri.read())
 
 
