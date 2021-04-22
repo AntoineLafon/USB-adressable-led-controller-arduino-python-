@@ -69,7 +69,6 @@ seri = serial.Serial("COM3", 115200, timeout=1)
 print("connected!")
 time.sleep(2)
 #send_custom(0,255,255,255,seri)
-#print(seri.read())
 l = 90
 for j in range(0,3):
     for i in range(0,99):
