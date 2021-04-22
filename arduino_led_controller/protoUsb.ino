@@ -7,9 +7,9 @@
 #define RAINBOW 1
 #define FADE 2
 
-void parse_header(unsigned char header, char *mode, bool *crc, unsigned int* len){
+void parse_header(char header, char *mode, bool *ack, unsigned int* len){
   *mode = header>>5;
-  *crc = (header>>4 & 1);
+  *ack = (header>>4 & 1);
   unsigned char llen[7];
   bool ext = (header>>3 & 1);
 
@@ -22,15 +22,6 @@ void parse_header(unsigned char header, char *mode, bool *crc, unsigned int* len
   }else{
     *len = (header & 0b111);
   }
-
-}
-
-bool checksum(char * data, int len, char crc){
-  char sum = 0;
-  for(int i = 0; i < len; i++){
-    sum ^= data[i];
-  }
-  return sum == crc;
 }
 
 void execute(CRGB leds[NUM_LEDS], char mode, unsigned char * data, int len){

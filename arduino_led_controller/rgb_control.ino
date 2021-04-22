@@ -9,7 +9,7 @@ void setBunch(CRGB leds[NUM_LEDS],unsigned char * data, int len){
   char start;
   start = data[0];
   while (3*i < len){
-    leds[min(start+i,NUM_LEDS-1)].setRGB(data[3*i+1],data[3*i +2],data[3*i+3]);
+    leds[min(start+i,NUM_LEDS)].setRGB(data[3*i+1],data[3*i +2],data[3*i+3]);
     i++;
   }
   FastLED.show();  

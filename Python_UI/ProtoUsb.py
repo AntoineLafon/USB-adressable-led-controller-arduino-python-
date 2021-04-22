@@ -33,30 +33,48 @@ def create_header(mode, crc, length):
         return [(mode << 5) + (crc << 4) + length]
 
 
-def checksum(data):
-    sum = 0
-    for d in data:
-        sum ^= d
-    return sum
+class Trame(object):
+	def __init__(self, ident=0, ack=False, data=[]):
+		super(Trame, self).__init__()
+		self.ident = ident
+		self.ack = ack
+		self.data = data
+		self.header = create_header(self.ident, self.ack, len(self.data))
+	def setData(self, data):
+		self.data = data
+		self.header = create_header(self.ident, self.ack, len(self.data))
+	def append(self, val):
+		self.data.append(val)
+		self.header += 1
+	def send(self, ser, timeout = 0.01):
+		ser.write(self.header+self.data)
+		ser.flush()
+		if (self.ack):
+			t = ser.timeout
+			ser.timeout = timeout
+			rep = ser.read()
+			return (rep == int.to_bytes(~self.header[0],1,"big",signed=True))
+		return True
 
 
 def send_custom(num_led, red, green, blue, ser):
-    header = create_header(CUSTOM, False, 4)
-    data = [num_led, red, green, blue]
-    ser.write(header+data)
+    trame = Trame(CUSTOM)
+    trame.setData([num_led, red, green, blue])
+    trame.send(ser)
 
 
 def send_bunch(start, leds, ser):
-    header = create_header(BUNCH, False, len(leds)*3+1)
+    trame = Trame(BUNCH, ack = True)
     data = [start]
     for (r,g,b) in leds:
         data += [r, g, b]
-    ser.write(header+data)
+    trame.setData(data)
+    while ( not trame.send(ser)):
+    	time.sleep(0.005)
 
 def send_rainbow(speed, ser):
-    header = create_header(MODE, False, 2)
-    data = [RAINBOW, speed]
-    ser.write(header + data)
+    trame = Trame(MODE,data=[RAINBOW, speed])
+    trame.send(ser)
 
 def send_fade(speed, ser):
     header = create_header(MODE, False, 2)
@@ -64,12 +82,13 @@ def send_fade(speed, ser):
     ser.write(header + data)
 
 def send_toggle(ser):
-    header = create_header(TOGGLE, False, 0)
-    ser.write(header)
+    trame = Trame(TOGGLE)
+    trame.send(ser)
 
 
 
 
+<<<<<<< Updated upstream
 
 seri = serial.Serial("COM3", 115200, timeout=1)
 print("connected!")
@@ -96,3 +115,14 @@ send_bunch(0, [(200,0,0)]*50, seri)
 print(seri.read())
 
 
+=======
+def test_bunch():
+	seri = serial.Serial("COM9", 115200)
+	print("connected!")
+	time.sleep(2)
+	l = 80
+	for j in range(0,4):
+	    for i in range(0,99):
+	        send_bunch(i, [(0,0,0)] +([(255,(255*k*k*k//(l*l*l)),(255*k*k*k//(l*l*l))) for k in range(0,l)]), seri)
+test_bunch()
+>>>>>>> Stashed changes

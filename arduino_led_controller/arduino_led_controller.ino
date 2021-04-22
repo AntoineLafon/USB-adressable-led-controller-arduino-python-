@@ -10,11 +10,15 @@ char mode;
 unsigned int len;
 bool crc;
 unsigned char data[3*NUM_LEDS];
+<<<<<<< Updated upstream
 int lcrc;
 
 char actual_mod;
 int global_speed = 0;
 unsigned long timer = 0;
+=======
+int lread;
+>>>>>>> Stashed changes
 
 void setup() {
   Serial.begin(115200);
@@ -28,13 +32,30 @@ void setup() {
 
 
 void loop() {
- if(Serial.available()){
+ if(Serial.available()> 0){
    header = Serial.read();
+<<<<<<< Updated upstream
    parse_header(header, &mode, &crc, &len);
    lcrc = Serial.readBytes(data,len + (int)crc);
    if ((lcrc == len + (int)crc) && (!crc || checksum(data, len, data[len]))){
      execute(leds, mode, data, len);
    }
+=======
+   parse_header(header, &mode, &ack, &len);
+   lread = Serial.readBytes(data,len);
+   
+   if (ack){
+    while(Serial.available() > 0) {
+      char t = Serial.read();
+    }
+    if (lread == len){
+      Serial.write(~header);
+    }else{
+      Serial.write(1);
+    }
+   }
+   execute(leds, mode, data, len);
+>>>>>>> Stashed changes
  }
 
  rgb_handler(leds);
